@@ -3,37 +3,68 @@ window.onload = () => {
     const url = new URL(location.href)
     const param = new URLSearchParams(url.search)
     console.log(param.get('a'))
-    // drawText(param.get('a'))
     drawText()
+    init()
 }
+
+function init()
+{
+
+    const content = document.getElementById('content1')
+    // content.addEventListener('keyup', () => {
+    //     console.log(content.value)
+    // })
+    const submit = document.getElementById('submit')
+    submit.addEventListener('click', () => {
+        console.log(content.value)
+        const href = window.location.href
+        const url = new URL(href.replace(location.search, ''))
+        url.searchParams.set('content1', content.value)
+        url.searchParams.set('content2', content.value)
+        console.log(url)
+        window.location.href = url
+    })
+}
+
 
 async function drawText() {
     const canvas = document.getElementById('canvas')
     const canvasImage = new CanvasImage(canvas)
 
     const backgroundUrl = 'https://cdn.pixabay.com/photo/2016/01/26/23/32/camp-1163419_960_720.jpg'
-    const url = "https://cdn.pixabay.com/photo/2016/01/26/23/32/camp-1163419_960_720.jpg"
 
-    // const backgroundUrl = 'https://placehold.jp/400x500.png'
     canvasImage.drawBackground(backgroundUrl, 0, 0)
     await new Promise(r => setTimeout(r, 100))
 
 
     canvasImage.drawOpacityWhiteRect()
-    canvasImage.drawTitle('⛺9すめテント3選', 60)
+    canvasImage.drawTitle('京都旅行のしおり', 60)
 
-    let x = 220
-    let y = 90
+    let x = 300
+    let y = 120
     let spacing = 200
+
+    const yStart = 90
+    const yEnd = 700
+    canvasImage.drawAlignLine(x, yStart, yEnd)
 
     const headline = "奈良金魚ミュージアム"
     const msg = "日本三大金魚の産地のひとつ、奈良県に日本最大級の金魚ミュージアムが誕生。全体が“金魚”をコンセプトとしており、今を駆け抜けるアーティスト達によって表現されています"
+    const url = "https://cdn.pixabay.com/photo/2016/01/26/23/32/camp-1163419_960_720.jpg"
     // const url = 'https://placehold.jp/400x500.png'
     canvasImage.drawContent(headline, msg, url, x, y)
     y += spacing
-    canvasImage.drawContent(headline, msg, url, x, y)
+    const headline2 = "奈良 鹿公園"
+    const msg2 = "春日大社がある奈良公園には神の使いとしてその数およそ1200頭もの鹿が生息しています。"
+    canvasImage.drawContent(headline2, msg2, url, x, y)
     y += spacing
-    canvasImage.drawContent(headline, msg, url, x, y)
+    const headline3 = "彩華ラーメン"
+    const msg3 = "屋台での創業以来、天理ラーメンの名で親しまれた彩華ラーメンは、奈良県を中心に大阪、兵庫、京都、愛知で親しまれています。 "
+    canvasImage.drawContent(headline3, msg3, url, x, y)
+
+
+    y += spacing
+    canvasImage.drawMoving('🐾', x, y)
 
 
     // console.log(canvas.toDataURL('image/png'))
@@ -66,13 +97,13 @@ class CanvasImage {
         const leftMargin = 30
         this._ctx.beginPath()
         this._ctx.fillStyle = '#666'
-        this._ctx.font = `bold ${this._fontSize + 10}px 'Yusei Magic', 'sans-serif'`;
+        this._ctx.font = `bold ${this._fontSize + 7}px 'Yusei Magic', 'sans-serif'`;
         this._ctx.textBaseline = 'middle'
         this._ctx.textAlign = 'start'
         this._ctx.fillText(
             text,
             x + this._rectWidth + leftMargin,
-            y + this._rectHeight / 2,
+            y,
         )
     }
 
@@ -86,13 +117,13 @@ class CanvasImage {
      */
     drawTime(number, x, y) {
 
-        const centerX = x + this._rectWidth / 2
-        const centerY = y + this._rectHeight / 2
+        const leftTopX = x - this._rectWidth / 2
+        const leftTopY = y - this._rectHeight / 2
         // 黒い四角を作る
         this._ctx.beginPath()
         this._ctx.fillStyle = '#ffaa00'
         // this._ctx.fillRect(x, y, this._rectWidth, this._rectHeight)
-        this._ctx.arc(centerX, centerY, this._rectWidth, 0, 2 * Math.PI, false);
+        this._ctx.arc(x, y, this._rectWidth, 0, 2 * Math.PI, false);
         this._ctx.fill();
 
         // x,y座標から正方形の中央にテキストを配置する
@@ -103,9 +134,58 @@ class CanvasImage {
         this._ctx.textAlign = 'center'
         this._ctx.fillText(
             number,
-            centerX,
-            centerY
+            x,
+            y
         )
+    }
+
+    /**
+     *  移動を表示する
+     * @param string number 数字
+     * @param int x x座標
+     * @param int y y座標
+     * 
+     */
+    drawMoving(icon, x, y) {
+
+        const leftTopX = x - this._rectWidth / 2
+        const leftTopY = y - this._rectHeight / 2
+        this._ctx.beginPath()
+        this._ctx.fillStyle = '#ffaa00'
+        this._ctx.arc(x, y, this._rectWidth / 1.5, 0, 2 * Math.PI, false);
+        this._ctx.fill();
+
+        // x,y座標から正方形の中央にテキストを配置する
+        this._ctx.beginPath()
+        this._ctx.fillStyle = '#fff'
+        this._ctx.font = `bold ${this._fontSize}px 'sans-serif'`;
+        this._ctx.textBaseline = 'middle'
+        this._ctx.textAlign = 'center'
+        this._ctx.fillText(
+            icon,
+            x,
+            y
+        )
+        this.drawHeadline('徒歩', x, y)
+    }
+
+
+    /**
+     * タイムラインの縦線を描写する
+     * @param int yStart y座標 開始位置
+     * @param int yEnd y座標 終了位置
+     * @param int x x座標
+     * 
+     */
+    drawAlignLine(x, yStart, yEnd) {
+        this._ctx.beginPath()
+        this._ctx.moveTo(x,yStart)
+        this._ctx.lineTo(x,yEnd)
+        this._ctx.setLineDash([8,8])
+        this._ctx.lineWidth = 3
+        this._ctx.strokeStyle = "#ffdd00"
+        this._ctx.stroke()
+
     }
 
     /**
@@ -117,24 +197,23 @@ class CanvasImage {
      * 
      */
     drawTextArea(text, x, y) {
+        // 位置の定義
         const leftMargin = 30
         x = x + leftMargin * 2
-        const MaxWidth = 250
+        const MaxWidth = 200
         const lineHeight = this._fontSize + 5
         const textArr = text.split("");
         let line = ''
+        // 描写
         this._ctx.beginPath()
         for (let i = 0; i < textArr.length; i++) {
             let oneline = line + textArr[i]
-            console.log(oneline)
             //文字の長さを計測するときのfontのサイズが異なってしまうため、ここでリセットする
             this._ctx.font = `${this._fontSize}px 'Yusei Magic', 'sans-serif'`;
 
             // 文字の長さを取得する
             let metrics = this._ctx.measureText(oneline)
             let textWidth = metrics.width
-            // console.log(textWidth)
-            console.log(textWidth)
 
             if (textWidth > MaxWidth) {
                 //  超過した場合は、文字を描写
@@ -144,15 +223,9 @@ class CanvasImage {
                 this._ctx.fillText(oneline, x, y)
                 y += lineHeight
                 line = ''
-                console.log(line)
-                console.log(textWidth)
             } else {
-                console.log('文字を加えていく')
-                console.log(textWidth)
-                console.log(line)
                 line = oneline
                 if (i == textArr.length - 1) {
-                    console.log('最後の文字の場合は描写')
                     this._ctx.beginPath()
                     this._ctx.fillStyle = '#666'
                     this._ctx.textAlign = 'start'
@@ -249,7 +322,7 @@ class CanvasImage {
     ) {
         this.drawTime("15:30", x, y)
         this.drawHeadline(headline, x, y)
-        this.drawTextArea(message, x, y + 60)
+        this.drawTextArea(message, x, y + 40)
         // this.drawImgFromURL(url, x - 150, y)
     }
 
