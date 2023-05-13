@@ -12,24 +12,22 @@
           @import url('https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap');
           </style>
 
-        <title>Template</title>
+        <title>しおりメーカー</title>
     </head>
 
     <body>
+      <div class="input-group">
+        <textarea id="content1" class="form-control" aria-label="With textarea">奈良金魚</textarea>
+        <button id="submit" type="submit" class="btn btn-primary">url発行</button>
+      </div>
       <div class="container mt-5">
-        <!--
-          ####################### 追加分 ここから####################################
-        -->
 
         <canvas id="canvas" width="600" height="960" style="border:1px solid #555"></canvas>
 
         <script src="canvas.js"></script>
 
-
-        <!--
-          ####################### 追加分 ここまで####################################
-        -->
       </div>
+
 
         <!-- jQuery first, then Bootstrap JS, then Avant UI -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
