@@ -2,18 +2,30 @@
 window.onload = () => {
     const url = new URL(location.href)
     const param = new URLSearchParams(url.search)
-    console.log(param.get('a'))
-    drawText()
+    // console.log(param.get('a'))
     init()
 }
+function init() {
+    // 必要な図をviewを描写する
 
-function init()
-{
+    // フォームのデータを反映する
 
     const content = document.getElementById('content1')
-    // content.addEventListener('keyup', () => {
-    //     console.log(content.value)
-    // })
+    const timeEl = content.getElementsByClassName('time')
+    const time = timeEl[0].value
+
+    const headlineEl = content.getElementsByClassName('headline')
+    const headline = headlineEl[0].value
+
+    const textEl = content.getElementsByClassName('text')
+    const text = textEl[0].value
+
+    console.log(headline)
+
+
+    drawText(time, headline, text)
+
+
     const submit = document.getElementById('submit')
     submit.addEventListener('click', () => {
         console.log(content.value)
@@ -22,12 +34,31 @@ function init()
         url.searchParams.set('content1', content.value)
         url.searchParams.set('content2', content.value)
         console.log(url)
-        window.location.href = url
+        // window.location.href = url
+        getData()
     })
 }
 
+function getData() {
+    const content = document.getElementById('content1')
+    const timeEl = content.getElementsByClassName('time')
+    const time = timeEl[0].value
 
-async function drawText() {
+    const headlineEl = content.getElementsByClassName('headline')
+    const headline = headlineEl[0].value
+
+    const textEl = content.getElementsByClassName('text')
+    const text = textEl[0].value
+
+    console.log(time)
+    console.log(headline)
+    console.log(text)
+
+    drawText(time, headline, text)
+}
+
+
+async function drawText(time, headline, msg) {
     const canvas = document.getElementById('canvas')
     const canvasImage = new CanvasImage(canvas)
 
@@ -48,28 +79,21 @@ async function drawText() {
     const yEnd = 700
     canvasImage.drawAlignLine(x, yStart, yEnd)
 
-    const headline = "奈良金魚ミュージアム"
-    const msg = "日本三大金魚の産地のひとつ、奈良県に日本最大級の金魚ミュージアムが誕生。全体が“金魚”をコンセプトとしており、今を駆け抜けるアーティスト達によって表現されています"
     const url = "https://cdn.pixabay.com/photo/2016/01/26/23/32/camp-1163419_960_720.jpg"
     // const url = 'https://placehold.jp/400x500.png'
-    canvasImage.drawContent(headline, msg, url, x, y)
+    canvasImage.drawContent(time, headline, msg, url, x, y)
     y += spacing
     const headline2 = "奈良 鹿公園"
     const msg2 = "春日大社がある奈良公園には神の使いとしてその数およそ1200頭もの鹿が生息しています。"
-    canvasImage.drawContent(headline2, msg2, url, x, y)
+    canvasImage.drawContent(time, headline2, msg2, url, x, y)
     y += spacing
     const headline3 = "彩華ラーメン"
     const msg3 = "屋台での創業以来、天理ラーメンの名で親しまれた彩華ラーメンは、奈良県を中心に大阪、兵庫、京都、愛知で親しまれています。 "
-    canvasImage.drawContent(headline3, msg3, url, x, y)
+    canvasImage.drawContent(time, headline3, msg3, url, x, y)
 
 
     y += spacing
     canvasImage.drawMoving('🐾', x, y)
-
-
-    // console.log(canvas.toDataURL('image/png'))
-
-
 
 }
 
@@ -179,9 +203,9 @@ class CanvasImage {
      */
     drawAlignLine(x, yStart, yEnd) {
         this._ctx.beginPath()
-        this._ctx.moveTo(x,yStart)
-        this._ctx.lineTo(x,yEnd)
-        this._ctx.setLineDash([8,8])
+        this._ctx.moveTo(x, yStart)
+        this._ctx.lineTo(x, yEnd)
+        this._ctx.setLineDash([8, 8])
         this._ctx.lineWidth = 3
         this._ctx.strokeStyle = "#ffdd00"
         this._ctx.stroke()
@@ -306,6 +330,7 @@ class CanvasImage {
 
     /**
      * URLからテキストを描写する
+     * @param string time 時間
      * @param string headline タイトル
      * @param string message 説明文
      * @param string url 画像URL
@@ -314,13 +339,14 @@ class CanvasImage {
      * 
      */
     drawContent(
+        time,
         headline,
         message,
         url,
         x,
         y
     ) {
-        this.drawTime("15:30", x, y)
+        this.drawTime(time, x, y)
         this.drawHeadline(headline, x, y)
         this.drawTextArea(message, x, y + 40)
         // this.drawImgFromURL(url, x - 150, y)

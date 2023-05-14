@@ -6,7 +6,9 @@
 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:500,600,700">
         <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+      <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
         <style>
           @import url('https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap');
@@ -16,8 +18,53 @@
     </head>
 
     <body>
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="panel panel-default">
+  <div class="panel-heading">Education Experience</div>
+  <div class="panel-body">
+  
+  <div id="education_fields">
+          
+  </div>
+  <div id="content1">
+    <div class="col-sm-3 nopadding">
+      <div class="form-group">
+        <select class="form-control time" id="educationDate" name="educationDate[]">
+          <option value="">時間</option>
+          <option value="15:30" selected>15:30</option>
+          <option value="16:00">16:00</option>
+          <option value="16:30">16:30</option>
+          <option value="17:00">17:00</option>
+          <option value="17:30">17:30</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-sm-3 nopadding">
+      <div class="form-group">
+        <input type="text" class="form-control headline" id="Major" name="Major[]" value="清水寺" placeholder="見出し">
+      </div>
+    </div>
+    <div class="col-sm-3 nopadding">
+      <div class="form-group">
+        <textarea type="text" class="form-control text" id="Degree" name="Degree[]" value="" placeholder="本文">日本三大金魚の産地のひとつ、奈良県に日本最大級の金魚ミュージアムが誕生。全体が“金魚”をコンセプトとしており、今を駆け抜けるアーティスト達によって表現されています</textarea>
+      </div>
+    </div>
+
+    <div class="col-sm-3 nopadding">
+      <div class="form-group">
+        <div class="input-group">
+          <div class="input-group-btn">
+            <button class="btn btn-success" type="button"  onclick="education_fields();"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  </div>
+</div>
       <div class="input-group">
-        <textarea id="content1" class="form-control" aria-label="With textarea">奈良金魚</textarea>
         <button id="submit" type="submit" class="btn btn-primary">url発行</button>
       </div>
       <div class="container mt-5">
@@ -32,6 +79,7 @@
         <!-- jQuery first, then Bootstrap JS, then Avant UI -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script src="form.js"></script>
         <!--
           ####################### 追加分 ####################################
         -->
