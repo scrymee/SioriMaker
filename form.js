@@ -20,9 +20,8 @@ function education_fields() {
     content.querySelector('.addBtn').classList.remove('btn-success')
     content.querySelector('.addBtn').classList.add('btn-danger')
     content.querySelector('.addBtn').setAttribute('onclick', 'remove_education_fields(' + room + ')')
-    content.querySelector('.glyphicon').classList.remove('glyphicon-plus')
-    content.querySelector('.glyphicon').classList.add('glyphicon-minus')
-    console.log(content)
+    content.querySelector('.fas').classList.remove('fa-plus')
+    content.querySelector('.fas').classList.add('fa-minus')
     divtest.appendChild(content)
 
 

@@ -22,7 +22,6 @@ function displayInputFromParams() {
         if (param[1] === undefined) continue
         const formattedContent = contents.split(',')
         const content = document.getElementById(id)
-        console.log(content)
         content.querySelector('.time').value = formattedContent[0]
         content.querySelector('.headline').value = formattedContent[1]
         content.querySelector('.text').value = formattedContent[2]
