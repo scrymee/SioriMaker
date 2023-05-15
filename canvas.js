@@ -10,7 +10,6 @@ function displayInputFromParams() {
     const url = new URL(location.href)
     const params = new URLSearchParams(url.search)
 
-    console.log(params.size)
     if (params.size > 1) {
         //1回はすでにあるため1引く
         for (let i = 0; i < params.size - 1; i++) {
@@ -23,6 +22,7 @@ function displayInputFromParams() {
         if (param[1] === undefined) continue
         const formattedContent = contents.split(',')
         const content = document.getElementById(id)
+        console.log(content)
         content.querySelector('.time').value = formattedContent[0]
         content.querySelector('.headline').value = formattedContent[1]
         content.querySelector('.text').value = formattedContent[2]
@@ -53,7 +53,7 @@ function update() {
             const headline = content.querySelector('.headline').value
             const text = content.querySelector('.text').value
             //クエリパラメータに設定
-            url.searchParams.set(content.id, `${time},${headline},${text}`)
+            url.searchParams.set(`content${i + 1}`, `${time},${headline},${text}`)
         }
         // url.searchParams.set('content2', content.value)
         window.location.href = url
@@ -94,13 +94,14 @@ class CanvasImage {
 
         //コンテンツの数
         this._contentCount = 0
-        this._contentHeight = 200
-        this._contentStartY = 120
-        this._contentX = 70
-        // this._contentX = 300
-        this._leftMargin = 30
-        this._MaxWidth = 400
-        // this._MaxWidth = 200
+        this._contentStartY = 150
+        this._contentHeight = this._contentStartY
+        // this._contentX = 70
+        this._contentX = 300
+        this._leftMargin = 15
+        this._bottomMargin = 60
+        // this._MaxWidth = 400
+        this._MaxWidth = 200
 
 
     }
@@ -119,7 +120,6 @@ class CanvasImage {
         this.drawTitle('京都旅行のしおり', 60)
 
 
-        this.drawAlignLine()
 
     }
 
@@ -147,7 +147,7 @@ class CanvasImage {
     /**
      *  時刻を表示する
      * @param string number 数字
-     * @param int x x座標
+     * @param int x x座標。縁の中央
      * @param int y y座標
      * 
      */
@@ -173,6 +173,8 @@ class CanvasImage {
             x,
             y
         )
+
+        this._contentHeight += this._rectHeight
     }
 
     /**
@@ -213,7 +215,7 @@ class CanvasImage {
      * @param int x x座標
      * 
      */
-    drawAlignLine(x = this._contentX, yStart = 90, yEnd = 700) {
+    drawAlignLine(x = this._contentX, yStart = 90, yEnd = this._contentHeight - this._rectHeight) {
         this._ctx.beginPath()
         this._ctx.moveTo(x, yStart)
         this._ctx.lineTo(x, yEnd)
@@ -234,11 +236,12 @@ class CanvasImage {
      */
     drawTextArea(text, x, y) {
         // 位置の定義
-        x = x + this._leftMargin * 2
+        x = x + this._rectWidth + this._leftMargin
         const lineHeight = this._fontSize + 5
         const textArr = text.split("");
         let line = ''
         // 描写
+        let contentY = 0
         this._ctx.beginPath()
         for (let i = 0; i < textArr.length; i++) {
             let oneline = line + textArr[i]
@@ -254,8 +257,8 @@ class CanvasImage {
                 this._ctx.beginPath()
                 this._ctx.fillStyle = '#666'
                 this._ctx.textAlign = 'start'
-                this._ctx.fillText(oneline, x, y)
-                y += lineHeight
+                this._ctx.fillText(oneline, x, contentY + y)
+                contentY += lineHeight
                 line = ''
             } else {
                 line = oneline
@@ -263,11 +266,12 @@ class CanvasImage {
                     this._ctx.beginPath()
                     this._ctx.fillStyle = '#666'
                     this._ctx.textAlign = 'start'
-                    this._ctx.fillText(line, x, y)
+                    this._ctx.fillText(line, x, contentY + y)
 
                 }
             }
         }
+        this._contentHeight += contentY
     }
 
     /**
@@ -284,7 +288,6 @@ class CanvasImage {
         img.onload = () => {
             const imgW = 120
             const imgAspect = img.height / img.width
-            console.log(imgW)
             this._ctx.beginPath()
             this._ctx.drawImage(img, x, y, imgW, imgW * imgAspect)
             this._ctx.strokeRect(x, y, imgW, imgW * imgAspect)
@@ -307,18 +310,23 @@ class CanvasImage {
 
             //短い方に合わせる
 
-            const Tatenaga = img.width < img.height
-            if (Tatenaga) {
-                const imgW = this._canvas.width
-                const imgAspect = img.height / img.width
-                this._ctx.beginPath()
-                this._ctx.drawImage(img, x, y, imgW, imgW * imgAspect)
-            } else {
-                const imgH = this._canvas.height
-                const imgAspect = img.width / img.height
-                this._ctx.beginPath()
-                this._ctx.drawImage(img, x, y, imgH * imgAspect, imgH)
-            }
+            // const Tatenaga = img.width < img.height
+            // if (Tatenaga) {
+            //     const imgW = this._canvas.width
+            //     const imgAspect = img.height / img.width
+            //     this._ctx.beginPath()
+            //     this._ctx.drawImage(img, x, y, imgW, imgW * imgAspect)
+            // } else {
+            //     const imgH = this._canvas.height
+            //     const imgAspect = img.width / img.height
+            //     this._ctx.beginPath()
+            //     this._ctx.drawImage(img, x, y, imgH * imgAspect, imgH)
+            // }
+            const width = this._canvas.width
+            const height = this._canvas.height
+            this._ctx.fillStyle = "rgba(255, 170, 0, 0.85)"
+            this._ctx.roundRect(0, 0, width, height)
+            this._ctx.fill()
         }
     }
 
@@ -334,8 +342,25 @@ class CanvasImage {
         const padding = 20
         this._ctx.beginPath()
         this._ctx.fillStyle = "rgba(255, 255, 255, 0.85)"
-        this._ctx.roundRect(padding, padding, width - 2 * padding, height - 2 * padding, round)
+        const marginTop = 60
+        this._ctx.roundRect(padding, padding + marginTop, width - 2 * padding, height - marginTop - 2 * padding, round)
         this._ctx.fill()
+
+
+
+        // dots
+        var r = 7,
+            cw = 30,
+            ch = 40;
+
+        for (var x = 15; x < this._canvas.width; x += cw) {
+            for (var y = 20; y < this._canvas.height; y += ch) {
+                this._ctx.fillStyle = '#fff';
+                this._ctx.roundRect(x - r / 2, y - r / 2, r, r, 10)
+                this._ctx.fill()
+            }
+        }
+
     }
 
 
@@ -348,7 +373,7 @@ class CanvasImage {
     drawTitle(text, y) {
         const title = '＼    ' + text + '    ／'
         this._ctx.beginPath()
-        this._ctx.fillStyle = '#ffaa00'
+        this._ctx.fillStyle = '#ff00ff'
         this._ctx.font = `${2.5 * this._fontSize}px 'Yusei Magic', 'sans-serif'`;
 
 
@@ -373,12 +398,16 @@ class CanvasImage {
         message,
     ) {
         const x = this._contentX
-        const y = this._contentStartY + this._contentHeight * this._contentCount
+        //contentHeightは基準点
+        const y = this._contentHeight
+        //上に線を引く
         this.drawTime(time, x, y)
         this.drawHeadline(headline, x, y)
         this.drawTextArea(message, x, y + 40)
         this._contentCount++
+        this._contentHeight += this._bottomMargin
         // this.drawImgFromURL(url, x - 150, y)
+        this.drawAlignLine(this._contentX, y + this._rectHeight, this._contentHeight - this._rectHeight)
     }
 
     drawFromCanvasInput(content) {

@@ -8,7 +8,7 @@
         <!-- Bootstrap CSS -->
       <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
         <style>
           @import url('https://fonts.googleapis.com/css2?family=Yusei+Magic&display=swap');
@@ -25,56 +25,84 @@
     <!--- URL-->
     <div class="input-group">
       <button id="submit" type="submit" class="btn btn-primary">url発行</button>
+      <button class="btn btn-success addBtn" type="button"  onclick="education_fields();"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>要素の追加</button>
     </div>
 
       <div class="container mt-5">
 
-  
-        <!---content Start-->
-        <div id="content1" class="row contentlist">
-          <div class="col-sm-2 nopadding">
-            <div class="form-group">
-              <select class="form-control time" id="educationDate" name="educationDate[]">
-                <option value="">時間</option>
-                <option value="15:30" selected>15:30</option>
-                <option value="16:00">16:00</option>
-                <option value="16:30">16:30</option>
-                <option value="17:00">17:00</option>
-                <option value="17:30">17:30</option>
-              </select>
+    <div id="sort_area">
+        <div id="content1" class="sort_item" style="background:#eee;padding:0.5rem;margin:0.5rem;">
+          <!---content Start-->
+          <div class="row contentlist">
+            <div class="col-sm-2 nopadding">
+              <div class="form-group">
+                <select class="form-control time" id="educationDate" name="educationDate[]">
+                  <option value="" selected>時間</option>
+                  <option value="8:00">8:00</option>
+                  <option value="8:30">8:30</option>
+                  <option value="9:00">9:00</option>
+                  <option value="9:30">9:30</option>
+                  <option value="10:00">10:00</option>
+                  <option value="10:30">10:30</option>
+                  <option value="11:00">11:00</option>
+                  <option value="11:30">11:30</option>
+                  <option value="12:00">12:00</option>
+                  <option value="12:30">12:30</option>
+                  <option value="13:00">13:00</option>
+                  <option value="13:30">13:30</option>
+                  <option value="14:00">14:00</option>
+                  <option value="14:30">14:30</option>
+                  <option value="15:00">15:00</option>
+                  <option value="15:30">15:30</option>
+                  <option value="16:00">16:00</option>
+                  <option value="16:30">16:30</option>
+                  <option value="17:00">17:00</option>
+                  <option value="17:30">17:30</option>
+                  <option value="18:00">18:00</option>
+                  <option value="18:30">18:30</option>
+                  <option value="19:00">19:00</option>
+                  <option value="19:30">19:30</option>
+                  <option value="20:00">20:00</option>
+                  <option value="20:30">20:30</option>
+                  <option value="21:00">21:00</option>
+                  <option value="21:30">21:30</option>
+                  <option value="22:00">22:00</option>
+                  <option value="22:30">22:30</option>
+                  <option value="23:00">23:00</option>
+                  <option value="23:30">23:30</option>
+                </select>
+              </div>
             </div>
-          </div>
-          <div class="col-sm-3 nopadding">
-            <div class="form-group">
-              <input type="text" class="form-control headline" id="Major" name="Major[]" value="清水寺" placeholder="見出し">
+            <div class="col-sm-3 nopadding">
+              <div class="form-group">
+                <input type="text" class="form-control headline" id="Major" name="Major[]" value="清水寺" placeholder="見出し">
+              </div>
             </div>
-          </div>
-          <div class="col-sm-6 nopadding">
-            <div class="form-group">
-              <textarea type="text" class="form-control text" id="Degree" name="Degree[]" value="" placeholder="本文">日本三大金魚の産地のひとつ、奈良県に日本最大級の金魚ミュージアムが誕生。全体が“金魚”をコンセプトとしており、今を駆け抜けるアーティスト達によって表現されています</textarea>
+            <div class="col-sm-6 nopadding">
+              <div class="form-group">
+                <textarea type="text" class="form-control text" id="Degree" name="Degree[]" value="" placeholder="本文">日本三大金魚の産地のひとつ、奈良県に日本最大級の金魚ミュージアムが誕生。全体が“金魚”をコンセプトとしており、今を駆け抜けるアーティスト達によって表現されています</textarea>
+              </div>
             </div>
-          </div>
 
-          <div class="col-sm-1 nopadding">
-            <div class="form-group">
-              <div class="input-group">
-                <div class="input-group-btn">
-                  <button class="btn btn-success addBtn" type="button"  onclick="education_fields();"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </button>
+            <div class="col-sm-1 nopadding">
+              <div class="form-group">
+                <div class="input-group">
+                  <div class="input-group-btn">
+                    <button class="btn btn-success addBtn" type="button"  onclick="education_fields();"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+          <!---content end-->
         </div>
-        <!---content end-->
-        <div id="education_fields">
-        </div>
-
-
+    </div>
 
         <!---キャンパス-->
         <canvas id="canvas" width="600" height="960" style="border:1px solid #555"></canvas>
         <script src="canvas.js"></script>
       </div>
+
 
 
         <!-- jQuery first, then Bootstrap JS, then Avant UI -->
@@ -84,6 +112,23 @@
         <!--
           ####################### 追加分 ####################################
         -->
+
+<script>
+let sort_areas  = $("#sort_area");
+
+for (let area of sort_areas ){
+    new Sortable(area, {
+        animation: 150,
+        ghostClass: 'dragging',
+        onEnd: function(){ console.log("ソート完了") },
+    });
+}
+</script>
+<style>
+  .sort_item:hover {
+    cursor: pointer;
+  }
+</style>
         
     </body>
 </html>
