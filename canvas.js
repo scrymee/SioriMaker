@@ -63,7 +63,8 @@ function update() {
 async function init() {
 
     //初期描写
-    const canvas = new CanvasImage(document.getElementById('canvas'))
+    const canvasEl = document.getElementById('canvas')
+    const canvas = new CanvasImage(canvasEl)
     canvas.drawInit()
     await new Promise(r => setTimeout(r, 100))
 
@@ -74,6 +75,16 @@ async function init() {
         const content = contents[i]
         canvas.drawFromCanvasInput(content)
     }
+    var dataURI = canvasEl.toDataURL("image/png", 1);
+
+    const img = document.getElementById('canvasImg')
+    img.src = dataURI;
+    let width = document.getElementById('form').clientWidth
+    console.log(width)
+    imgWidth = width < canvasEl.width ? width : canvasEl.width
+    console.log(imgWidth)
+    img.style.width = `${imgWidth * 0.9}px`
+    canvasEl.style.display = 'none'
     update()
 
 }

@@ -22,7 +22,7 @@
         <!--
           ####################### 追加分 ここから####################################
         -->
-      <div class="container" style="border: 1px solid #666">
+      <div class="container-fluid" style="border: 1px solid #666;">
         <!--- タブstart --->
         <div class="row d-sm-none">
           <div id="formTab" class="btn col text-primary">フォーム</div>
@@ -80,12 +80,12 @@
                     </div>
                     <div class="col-sm-3 nopadding">
                       <div class="form-group">
-                        <input type="text" class="form-control headline" id="Major" name="Major[]" value="清水寺" placeholder="見出し">
+                        <input type="text" class="form-control headline" value="清水寺" placeholder="見出し">
                       </div>
                     </div>
                     <div class="col-sm-6 nopadding">
                       <div class="form-group">
-                        <textarea type="text" class="form-control text" id="Degree" name="Degree[]" value="" placeholder="本文">日本三大金魚の産地のひとつ、奈良県に日本最大級の金魚ミュージアムが誕生。全体が“金魚”をコンセプトとしており、今を駆け抜けるアーティスト達によって表現されています</textarea>
+                        <textarea type="text" class="form-control text" value="" placeholder="本文" style="height:100px">日本三大金魚の産地のひとつ、奈良県に日本最大級の金魚ミュージアムが誕生。全体が“金魚”をコンセプトとしており、今を駆け抜けるアーティスト達によって表現されています</textarea>
                       </div>
                     </div>
 
@@ -104,6 +104,7 @@
                 </div>
                 <!-- 右フォーム -->
           <div id="result" class="col-md-6 p-3 d-sm-block d-none">
+            <img id="canvasImg">
             <canvas id="canvas" width="600" height="960" style="border:1px solid #555;"></canvas>
             <script src="canvas.js"></script>
             <script src="form.js"></script>
