@@ -1,99 +1,81 @@
 
 window.onload = () => {
-    const url = new URL(location.href)
-    const param = new URLSearchParams(url.search)
-    // console.log(param.get('a'))
+
+    displayInputFromParams()
+
     init()
 }
-function init() {
-    // 必要な図をviewを描写する
 
-    // フォームのデータを反映する
+function displayInputFromParams() {
+    const url = new URL(location.href)
+    const params = new URLSearchParams(url.search)
 
-    const content = document.getElementById('content1')
-    const timeEl = content.getElementsByClassName('time')
-    const time = timeEl[0].value
+    console.log(params.size)
+    if (params.size > 1) {
+        //1回はすでにあるため1引く
+        for (let i = 0; i < params.size - 1; i++) {
+            education_fields()
+        }
+    }
+    for (let param of params) {
+        const id = param[0]
+        const contents = param[1]
+        if (param[1] === undefined) continue
+        const formattedContent = contents.split(',')
+        const content = document.getElementById(id)
+        content.querySelector('.time').value = formattedContent[0]
+        content.querySelector('.headline').value = formattedContent[1]
+        content.querySelector('.text').value = formattedContent[2]
+    }
+}
 
-    const headlineEl = content.getElementsByClassName('headline')
-    const headline = headlineEl[0].value
-
-    const textEl = content.getElementsByClassName('text')
-    const text = textEl[0].value
-
-    console.log(headline)
-
-
-    drawText(time, headline, text)
-
-
+function update() {
     const submit = document.getElementById('submit')
-    submit.addEventListener('click', () => {
-        console.log(content.value)
+    submit.addEventListener('click', async () => {
+
+        //contentsを取得
+        const contents = document.getElementsByClassName('contentlist')
+        //canvasに初期描写
+        const canvas = new CanvasImage(document.getElementById('canvas'))
+        canvas.drawInit()
+        await new Promise(r => setTimeout(r, 100))
+
         const href = window.location.href
+        //クエリパラメータを取り除く
         const url = new URL(href.replace(location.search, ''))
-        url.searchParams.set('content1', content.value)
-        url.searchParams.set('content2', content.value)
+
+
+        // テキストを描写
+        for (let i = 0; i < contents.length; i++) {
+            const content = contents[i]
+            canvas.drawFromCanvasInput(content)
+            const time = content.querySelector('.time').value
+            const headline = content.querySelector('.headline').value
+            const text = content.querySelector('.text').value
+            //クエリパラメータに設定
+            url.searchParams.set(content.id, `${time},${headline},${text}`)
+        }
+        // url.searchParams.set('content2', content.value)
+        window.location.href = url
         console.log(url)
-        // window.location.href = url
-        getData()
     })
 }
 
-function getData() {
-    const content = document.getElementById('content1')
-    const timeEl = content.getElementsByClassName('time')
-    const time = timeEl[0].value
+async function init() {
 
-    const headlineEl = content.getElementsByClassName('headline')
-    const headline = headlineEl[0].value
-
-    const textEl = content.getElementsByClassName('text')
-    const text = textEl[0].value
-
-    console.log(time)
-    console.log(headline)
-    console.log(text)
-
-    drawText(time, headline, text)
-}
-
-
-async function drawText(time, headline, msg) {
-    const canvas = document.getElementById('canvas')
-    const canvasImage = new CanvasImage(canvas)
-
-    const backgroundUrl = 'https://cdn.pixabay.com/photo/2016/01/26/23/32/camp-1163419_960_720.jpg'
-
-    canvasImage.drawBackground(backgroundUrl, 0, 0)
+    //初期描写
+    const canvas = new CanvasImage(document.getElementById('canvas'))
+    canvas.drawInit()
     await new Promise(r => setTimeout(r, 100))
 
-
-    canvasImage.drawOpacityWhiteRect()
-    canvasImage.drawTitle('京都旅行のしおり', 60)
-
-    let x = 300
-    let y = 120
-    let spacing = 200
-
-    const yStart = 90
-    const yEnd = 700
-    canvasImage.drawAlignLine(x, yStart, yEnd)
-
-    const url = "https://cdn.pixabay.com/photo/2016/01/26/23/32/camp-1163419_960_720.jpg"
-    // const url = 'https://placehold.jp/400x500.png'
-    canvasImage.drawContent(time, headline, msg, url, x, y)
-    y += spacing
-    const headline2 = "奈良 鹿公園"
-    const msg2 = "春日大社がある奈良公園には神の使いとしてその数およそ1200頭もの鹿が生息しています。"
-    canvasImage.drawContent(time, headline2, msg2, url, x, y)
-    y += spacing
-    const headline3 = "彩華ラーメン"
-    const msg3 = "屋台での創業以来、天理ラーメンの名で親しまれた彩華ラーメンは、奈良県を中心に大阪、兵庫、京都、愛知で親しまれています。 "
-    canvasImage.drawContent(time, headline3, msg3, url, x, y)
-
-
-    y += spacing
-    canvasImage.drawMoving('🐾', x, y)
+    //ループ
+    //contentsを取得
+    const contents = document.getElementsByClassName('contentlist')
+    for (let i = 0; i < contents.length; i++) {
+        const content = contents[i]
+        canvas.drawFromCanvasInput(content)
+    }
+    update()
 
 }
 
@@ -108,6 +90,37 @@ class CanvasImage {
         // 吹き出しのスクエアサイズ
         this._rectWidth = 30
         this._rectHeight = 30
+
+
+        //コンテンツの数
+        this._contentCount = 0
+        this._contentHeight = 200
+        this._contentStartY = 120
+        this._contentX = 70
+        // this._contentX = 300
+        this._leftMargin = 30
+        this._MaxWidth = 400
+        // this._MaxWidth = 200
+
+
+    }
+
+    /**
+     * 初期描写を行う
+     */
+    async drawInit() {
+        const backgroundUrl = 'https://cdn.pixabay.com/photo/2016/01/26/23/32/camp-1163419_960_720.jpg'
+
+        this.drawBackground(backgroundUrl, 0, 0)
+        await new Promise(r => setTimeout(r, 100))
+
+
+        this.drawOpacityWhiteRect()
+        this.drawTitle('京都旅行のしおり', 60)
+
+
+        this.drawAlignLine()
+
     }
 
     /**
@@ -118,7 +131,6 @@ class CanvasImage {
      * 
      */
     drawHeadline(text, x, y) {
-        const leftMargin = 30
         this._ctx.beginPath()
         this._ctx.fillStyle = '#666'
         this._ctx.font = `bold ${this._fontSize + 7}px 'Yusei Magic', 'sans-serif'`;
@@ -126,7 +138,7 @@ class CanvasImage {
         this._ctx.textAlign = 'start'
         this._ctx.fillText(
             text,
-            x + this._rectWidth + leftMargin,
+            x + this._rectWidth + this._leftMargin,
             y,
         )
     }
@@ -201,7 +213,7 @@ class CanvasImage {
      * @param int x x座標
      * 
      */
-    drawAlignLine(x, yStart, yEnd) {
+    drawAlignLine(x = this._contentX, yStart = 90, yEnd = 700) {
         this._ctx.beginPath()
         this._ctx.moveTo(x, yStart)
         this._ctx.lineTo(x, yEnd)
@@ -222,9 +234,7 @@ class CanvasImage {
      */
     drawTextArea(text, x, y) {
         // 位置の定義
-        const leftMargin = 30
-        x = x + leftMargin * 2
-        const MaxWidth = 200
+        x = x + this._leftMargin * 2
         const lineHeight = this._fontSize + 5
         const textArr = text.split("");
         let line = ''
@@ -239,7 +249,7 @@ class CanvasImage {
             let metrics = this._ctx.measureText(oneline)
             let textWidth = metrics.width
 
-            if (textWidth > MaxWidth) {
+            if (textWidth > this._MaxWidth) {
                 //  超過した場合は、文字を描写
                 this._ctx.beginPath()
                 this._ctx.fillStyle = '#666'
@@ -323,34 +333,11 @@ class CanvasImage {
 
         const padding = 20
         this._ctx.beginPath()
-        this._ctx.fillStyle = "rgba(255, 255, 255, 0.7)"
+        this._ctx.fillStyle = "rgba(255, 255, 255, 0.85)"
         this._ctx.roundRect(padding, padding, width - 2 * padding, height - 2 * padding, round)
         this._ctx.fill()
     }
 
-    /**
-     * URLからテキストを描写する
-     * @param string time 時間
-     * @param string headline タイトル
-     * @param string message 説明文
-     * @param string url 画像URL
-     * @param int x x座標
-     * @param int y y座標
-     * 
-     */
-    drawContent(
-        time,
-        headline,
-        message,
-        url,
-        x,
-        y
-    ) {
-        this.drawTime(time, x, y)
-        this.drawHeadline(headline, x, y)
-        this.drawTextArea(message, x, y + 40)
-        // this.drawImgFromURL(url, x - 150, y)
-    }
 
     /**
      * タイトルを描写する
@@ -368,6 +355,38 @@ class CanvasImage {
         let metrics = this._ctx.measureText(title)
         let textWidth = metrics.width
         this._ctx.fillText(title, canvas.width / 2 - textWidth / 2, y)
+    }
+
+    /**
+     * URLからテキストを描写する
+     * @param string time 時間
+     * @param string headline タイトル
+     * @param string message 説明文
+     * @param string url 画像URL
+     * @param int x x座標
+     * @param int y y座標
+     * 
+     */
+    drawContent(
+        time,
+        headline,
+        message,
+    ) {
+        const x = this._contentX
+        const y = this._contentStartY + this._contentHeight * this._contentCount
+        this.drawTime(time, x, y)
+        this.drawHeadline(headline, x, y)
+        this.drawTextArea(message, x, y + 40)
+        this._contentCount++
+        // this.drawImgFromURL(url, x - 150, y)
+    }
+
+    drawFromCanvasInput(content) {
+
+        const time = content.querySelector('.time').value
+        const headline = content.querySelector('.headline').value
+        const text = content.querySelector('.text').value
+        this.drawContent(time, headline, text)
     }
 
 }
